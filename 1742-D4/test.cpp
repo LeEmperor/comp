@@ -20,31 +20,37 @@ typedef vector<VS> VSS;
 typedef pair<int, int> PII;
 typedef pair<int, string> PIS;
 
-int solve(int ai, int bi) {
-    int t = 0;
-    int b = bi;
-    int a = ai;
+PI Euclid(PII p) {
+        int bruh1 = p.first;
+        int bruh2 = p.second;
+        p.first = bruh2;
+        p.second = bruh1 % bruh2;
 
-    while(b != 0) {
-        t = b;
-        b = a % b;
-        a = t;
-    }
+        return p;
+}
 
-    return a;
+int wombo_combo(int a, int b) {
+        // Euclidean Algorithm
+        PII p;
+        p.first = a;
+        p.second = b;
+        while(true) {
+                if (p.second == 0) {
+                        return p.first;
+                } else {
+                        p = Euclid(p); 
+                }
+        }
+
+        return 4301761;
 }
 
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0); cout.tie(0);
 
-	int testcases;
-	cin >> testcases;
-
-	while(testcases--) {
         int a, b;
         cin >> a >> b;
-        cout << solve(a, b) << nL;
-	}	
+        cout << wombo_combo(a, b) << nL;
 }
 
