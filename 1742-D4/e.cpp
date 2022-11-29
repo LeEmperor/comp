@@ -3,7 +3,9 @@
 #include <string>
 #include <bitset> 
 #include <cmath> 
+#include <numeric>
 #include <algorithm> 
+#include <set>
 using namespace std;
 
 #define nL "\n"
@@ -14,8 +16,12 @@ typedef vector<int> VI;
 typedef vector<VI> VVI;
 typedef long long ll;
 typedef vector<ll> Vll;
+typedef vector<string> VS;
+typedef vector<VS> VSS;
+typedef pair<int, int> PII;
+typedef pair<int, string> PIS;
 
-int last_true(vector<long long> data, ll findThis) {
+ll last_true(Vll data, ll findThis) {
 	int low = 0;
 	int high = data.size() - 1;
 
@@ -27,27 +33,45 @@ int last_true(vector<long long> data, ll findThis) {
 		} else if(data[mid] == findThis) {
 			low = mid;
 		} else {
-			// data[mid] < findThis
 			low = mid;
 		}
-
 
 	}
 
 	return low + 1;
 }
 
-Vll solve(vector<ll> input, vector<ll> questions) {
-	Vll maxSeen(input.size(), 0);
-	maxSeen[0] = input[0];
-	Vll ans(input.size(), 0);
-
-	for(int i = 1; i < input.size(); i++) {
-		maxSeen[i] = max(maxSeen[i], input[i-1]);
+Vll monotonic_converter(Vll raw) {
+	Vll out(raw.size(), 0);
+	out[0] = raw[0];
+	
+	for(int i = 1; i < raw.size(); i++) {
+		out[i] = max(raw[i], out[i-1]);
 	}
 
-	for(int i = 0; i < questions.size(); i++) {
-		ans[i] = input[last_true(maxSeen, questions[i])];
+	return out;
+}
+
+Vll solve(Vll a, Vll b) {
+	Vll ans;
+	Vll monotonic = monotonic_converter(a); 
+	monotonic.push_back(0);
+	int bruh2 = monotonic.size();
+
+	for(int i = 0; i < b.size(); i++) {
+		ll farthest = last_true(monotonic, b[i]);
+		ll bruh = 0;
+
+		if(b[i] < a[0]) {
+			ans.push_back(0);
+			continue;
+		}
+
+		for(ll j = 0; j < farthest; j++) {
+			bruh += a[j];
+		}
+
+		ans.push_back(bruh);
 	}
 
 	return ans;
@@ -64,13 +88,13 @@ int main() {
 		int n, q;
 		cin >> n >> q;
 
-		Vll raw;
+		Vll input;
 		Vll questions;
 
 		while(n--) {
 			ll i;
 			cin >> i;
-			raw.push_back(i);
+			input.push_back(i);
 		}
 
 		while(q--) {
@@ -79,14 +103,13 @@ int main() {
 			questions.push_back(j);
 		}
 
-		Vll ans = solve(raw, questions);
+		Vll ans = solve(input, questions);
 
 		for(ll i : ans) {
 			cout << i << " ";
 		}
 
 		cout << nL;
-
 	}
 }
 
